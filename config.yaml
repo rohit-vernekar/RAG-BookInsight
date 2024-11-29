@@ -1,0 +1,16 @@
+query_config:
+  query: Social Isolation
+  relevant_docs: 5
+  input_files_dir: data
+  output_file: report.txt
+  analysis_dir: analysis
+
+openai_config:
+  model: gpt-4o
+  embedding_model: text-embedding-3-small
+  api_key: ""
+  context_window: 64000
+  max_output_tokens: 16000
+  temperature: 0.4
+  
+  
