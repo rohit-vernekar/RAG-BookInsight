@@ -1,15 +1,16 @@
 import os
-from openai import OpenAI
 from typing import Dict
+import warnings
+
+from openai import OpenAI
 
 from config import openai_config, query_config
 from text_processor import analyze_text
 
-import warnings
 warnings.filterwarnings("ignore")
 
-
 os.environ["OPENAI_API_KEY"] = openai_config["api_key"]
+
 
 def generate_report(file_analysis: Dict[str, str]) -> str:
     """
@@ -30,10 +31,10 @@ def generate_report(file_analysis: Dict[str, str]) -> str:
         "- Conclude with a paragraph summarizing your arguments and reinforcing the thesis.\n\n"
         "The books' titles are: " + ", ".join(file_analysis.keys()) + "\n\n"
     )
-    
+
     for title, analysis in file_analysis.items():
         prompt += f"Analysis of '{title}':\n{analysis}\n\n"
-    
+
     prompt += (
         "When writing the report, refer directly to the excerpts (e.g., as mentioned in '(excerpt)') to support your arguments.\n\n"
         "Do not use any special formatting. Begin your report now:"
@@ -47,12 +48,12 @@ def generate_report(file_analysis: Dict[str, str]) -> str:
             {"role": "user", "content": prompt},
         ],
         temperature=openai_config["temperature"],
-        max_tokens=openai_config["max_output_tokens"] 
+        max_tokens=openai_config["max_output_tokens"]
     )
     return response.choices[0].message.content
 
 
-if __name__ == "__main__":
+def main() -> None:
     files_to_analyze = os.listdir(query_config["input_files_dir"])
     files_analysis = {}
 
@@ -63,10 +64,14 @@ if __name__ == "__main__":
 
         filename = file.split(".")[0]
         files_analysis[filename] = analysis
-    
+
     print("\n\nGenerating report...")
     report = generate_report(files_analysis)
 
     with open(query_config["output_file"], "w", encoding="utf-8") as output_file:
         output_file.write(report)
     print("\n\nReport generated and saved to", query_config["output_file"])
+
+
+if __name__ == "__main__":
+    main()

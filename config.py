@@ -1,3 +1,5 @@
+from typing import Dict
+
 import yaml
 
 file_path = "config.yaml"
@@ -11,5 +13,3 @@ except FileNotFoundError:
     print(f"Error: File not found at {file_path}")
 except yaml.YAMLError as e:
     print(f"Error parsing YAML file: {e}")
-    
-

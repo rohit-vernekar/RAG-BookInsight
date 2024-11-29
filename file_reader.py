@@ -23,6 +23,7 @@ def _read_epub(file_path: str) -> str:
             text.append(soup.get_text())
     return '\n'.join(text)
 
+
 def _read_pdf(file_path: str) -> str:
     """
     Extracts text from a PDF file
@@ -39,6 +40,7 @@ def _read_pdf(file_path: str) -> str:
         text.append(page.extract_text())
     return '\n'.join(text)
 
+
 def _read_xml(file_path: str) -> str:
     """
     Extracts text from an XML file
@@ -52,13 +54,14 @@ def _read_xml(file_path: str) -> str:
     tree = ET.parse(file_path)
     root = tree.getroot()
     
-    def get_all_text(node):
+    def get_all_text(node: ET.Element) -> str:
         text = node.text if node.text else ""
         for child in node:
             text += get_all_text(child)
         return text.strip() + " "
     
     return get_all_text(root)
+
 
 def read_file(file_path: str) -> str:
     """

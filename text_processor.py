@@ -26,8 +26,8 @@ def _split_text(text: str, chunk_size: int = 256, chunk_overlap: int = 20) -> Li
     clean_text = " ".join(spacy_text_splitter.split_text(text))
 
     recr_text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size = chunk_size,
-        chunk_overlap = chunk_overlap,
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap
     )
 
     return recr_text_splitter.create_documents([clean_text])
@@ -50,7 +50,9 @@ def _prepare_query(documents: List[Document]) -> str:
     similar_docs = vector_store.similarity_search(query, k=query_config["relevant_docs"])
     excerpts = [doc.page_content for doc in similar_docs]
 
-    citations = "\n\n".join([f"- Relevant excerpt from document {i+1}: {excerpt}" for i, excerpt in enumerate(excerpts)])
+    citations = "\n\n".join(
+        [f"- Relevant excerpt from document {i+1}: {excerpt}" for i, excerpt in enumerate(excerpts)]
+    )
     refined_query = (
         f"{query}. Use the following excerpts to support your analysis:\n\n{citations}\n\n"
         "In your response, clearly reference the lines from documents in quotes and make your analysis structured."
@@ -77,7 +79,10 @@ def _get_analysis(refined_query: str, number_of_files: int) -> str:
             {"role": "user", "content": refined_query},
         ],
         temperature=openai_config["temperature"],
-        max_tokens=min(openai_config["max_output_tokens"], int(openai_config["context_window"]/(number_of_files * 2)))
+        max_tokens=min(
+            openai_config["max_output_tokens"],
+            int(openai_config["context_window"] / (number_of_files * 2))
+        )
     )
     analysis = response.choices[0].message.content
     return analysis
@@ -108,11 +113,9 @@ def analyze_text(file_path: str, number_of_files: int) -> str:
     analysis = _get_analysis(refined_query, number_of_files)
 
     filename = file_path.split("/")[-1].split(".")[0]
-    output_path = query_config["analysis_dir"] + "/" + filename + ".txt"
+    output_path = f"{query_config['analysis_dir']}/{filename}.txt"
     print("Saving analysis to", output_path)
     with open(output_path, "w", encoding="utf-8") as output_file:
         output_file.write(analysis)
 
     return analysis  
-
-    
