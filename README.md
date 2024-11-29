@@ -70,6 +70,18 @@ In the [config.yml](config.yml) file, configure the following parameters under `
 - `output_file`: Set the filename for the generated report.  
 - `analysis_dir`: Specify the directory to save intermediate analysis files for each book, which will be used to generate the final report.  
 
+### 6. **Running the Application**
+
+Once the setup steps are completed, you can run the application using the following command:  
+
+```bash  
+python main.py  
+```  
+
+This will execute the full pipeline, including text ingestion, thematic analysis, and report generation, based on the parameters specified in the `config.yml` file.  
+
+The generated report will be saved in the location specified under the `output_file` parameter in the configuration.
+
 ---  
 
 ## **Design Choices**
